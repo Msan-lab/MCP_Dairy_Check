@@ -38,4 +38,89 @@ def append_to_sheet(service_account_info, sheet_id, datetime_str, count):
 def create_line_chart(service_account_info, sheet_id):
     creds = service_account.Credentials.from_service_account_info(
         service_account_info,
-        scopes=["https
+        scopes=["https://www.googleapis.com/auth/spreadsheets"]
+    )
+    service = build('sheets', 'v4', credentials=creds)
+
+    spreadsheet_id = sheet_id
+    requests = [
+        {
+            "addChart": {
+                "chart": {
+                    "spec": {
+                        "title": "MCP Indexed Count Over Time",
+                        "basicChart": {
+                            "chartType": "LINE",
+                            "legendPosition": "BOTTOM_LEGEND",
+                            "axis": [
+                                {"position": "BOTTOM_AXIS", "title": "Datetime"},
+                                {"position": "LEFT_AXIS", "title": "Indexed Count"}
+                            ],
+                            "domains": [
+                                {
+                                    "domain": {
+                                        "sourceRange": {
+                                            "sources": [
+                                                {
+                                                    "sheetId": 0,
+                                                    "startRowIndex": 1,
+                                                    "startColumnIndex": 0,
+                                                    "endColumnIndex": 1
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ],
+                            "series": [
+                                {
+                                    "series": {
+                                        "sourceRange": {
+                                            "sources": [
+                                                {
+                                                    "sheetId": 0,
+                                                    "startRowIndex": 1,
+                                                    "startColumnIndex": 1,
+                                                    "endColumnIndex": 2
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "targetAxis": "LEFT_AXIS"
+                                }
+                            ],
+                            "headerCount": 0
+                        }
+                    },
+                    "position": {
+                        "newSheet": False
+                    }
+                }
+            }
+        }
+    ]
+
+    body = {'requests': requests}
+
+    service.spreadsheets().batchUpdate(
+        spreadsheetId=spreadsheet_id,
+        body=body
+    ).execute()
+
+def main():
+    service_account_info = json.loads(os.environ['GCP_SERVICE_ACCOUNT_KEY'])
+    sheet_id = os.environ['SHEET_ID']
+
+    count = get_indexed_count()
+    if count is not None:
+        now = datetime.datetime.now().strftime('%Y/%m/%d %H:%M')
+        print(f"✅ {now} のIndexed数：{count}個 を記録します")
+        append_to_sheet(service_account_info, sheet_id, now, count)
+
+        # ここでグラフ作成を呼び出す！
+        create_line_chart(service_account_info, sheet_id)
+    else:
+        print("⚠️ Indexed数を取得できませんでした。")
+
+if __name__ == "__main__":
+    main()
