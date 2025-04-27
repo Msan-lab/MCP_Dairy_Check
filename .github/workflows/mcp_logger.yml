@@ -27,4 +27,4 @@ jobs:
         GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         SHEET_ID: ${{ secrets.SHEET_ID }}
       run: |
-        python mcp_logger.py
+        python mcp_daily_check.py
