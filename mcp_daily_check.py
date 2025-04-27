@@ -8,6 +8,9 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import datetime
 
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+
 def get_indexed_count():
     url = "https://mcp.so/"
     response = requests.get(url)
@@ -32,18 +35,7 @@ def append_to_sheet(service_account_info, sheet_id, datetime_str, count):
     worksheet = sh.sheet1
     worksheet.append_row([datetime_str, count])
 
-def main():
-    # GitHub Secrets から読み込み
-    service_account_info = json.loads(os.environ['GCP_SERVICE_ACCOUNT_KEY'])
-    sheet_id = os.environ['SHEET_ID']  # 別途登録する
-    
-    count = get_indexed_count()
-    if count is not None:
-        now = datetime.datetime.now().strftime('%Y/%m/%d %H:%M')
-        print(f" {now} のIndexed数：{count}個 を記録します")
-        append_to_sheet(service_account_info, sheet_id, now, count)
-    else:
-        print("Indexed数を取得できませんでした。")
-
-if __name__ == "__main__":
-    main()
+def create_line_chart(service_account_info, sheet_id):
+    creds = service_account.Credentials.from_service_account_info(
+        service_account_info,
+        scopes=["https
