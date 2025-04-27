@@ -93,7 +93,17 @@ def create_line_chart(service_account_info, sheet_id):
                         }
                     },
                     "position": {
-                        "newSheet": False
+                        "overlayPosition": {
+                            "anchorCell": {
+                                "sheetId": 0,
+                                "rowIndex": 0,
+                                "columnIndex": 3
+                            },
+                            "offsetXPixels": 0,
+                            "offsetYPixels": 0,
+                            "widthPixels": 600,
+                            "heightPixels": 400
+                        }
                     }
                 }
             }
