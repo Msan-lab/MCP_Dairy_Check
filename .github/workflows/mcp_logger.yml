@@ -20,7 +20,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install gspread oauth2client requests beautifulsoup4
+        pip install gspread oauth2client requests beautifulsoup4 google-api-python-client
 
     - name: Run MCP Logger script
       env:
