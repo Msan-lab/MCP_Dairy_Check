@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import json
 import requests
@@ -31,17 +33,17 @@ def append_to_sheet(service_account_info, sheet_id, datetime_str, count):
     worksheet.append_row([datetime_str, count])
 
 def main():
-    # GitHub Secrets ‚©‚ç“Ç‚İ‚İ
+    # GitHub Secrets ã‹ã‚‰èª­ã¿è¾¼ã¿
     service_account_info = json.loads(os.environ['GCP_SERVICE_ACCOUNT_KEY'])
-    sheet_id = os.environ['SHEET_ID']  # •Ê“r“o˜^‚·‚é
+    sheet_id = os.environ['SHEET_ID']  # åˆ¥é€”ç™»éŒ²ã™ã‚‹
     
     count = get_indexed_count()
     if count is not None:
         now = datetime.datetime.now().strftime('%Y/%m/%d %H:%M')
-        print(f" {now} ‚ÌIndexed”F{count}ŒÂ ‚ğ‹L˜^‚µ‚Ü‚·")
+        print(f" {now} ã®Indexedæ•°ï¼š{count}å€‹ ã‚’è¨˜éŒ²ã—ã¾ã™")
         append_to_sheet(service_account_info, sheet_id, now, count)
     else:
-        print("Indexed”‚ğæ“¾‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B")
+        print("Indexedæ•°ã‚’å–å¾—ã§ãã¾ã›ã‚“ã§ã—ãŸã€‚")
 
 if __name__ == "__main__":
     main()
