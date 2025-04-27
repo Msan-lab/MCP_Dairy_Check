@@ -1,0 +1,30 @@
+name: MCP Logger Daily Job
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 毎日UTC時間0時（日本時間9時）に実行
+  workflow_dispatch:  # 手動実行もできるようにする
+
+jobs:
+  run-logger:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install gspread oauth2client requests beautifulsoup4
+
+    - name: Run MCP Logger script
+      env:
+        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        SHEET_ID: ${{ secrets.SHEET_ID }}
+      run: |
+        python mcp_logger.py
